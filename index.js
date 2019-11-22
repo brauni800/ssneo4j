@@ -13,6 +13,7 @@ app.use(cors({ origin: '*', credentials: true }));
 //routes
 app.use(require('./routes/RouteArticles'));
 app.use(require('./routes/RouteMagazine'));
+app.use(require('./routes/RouteAuthor'));
 
 //listen port
 app.listen(PORT, () => {
