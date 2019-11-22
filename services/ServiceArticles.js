@@ -1,11 +1,16 @@
 const RepositoryArticles = require('../repositories/RepositoryArticles');
 
 class ServiceArticles {
-  createArticle(data) {
-    if(Number.isNaN(data.appointments)) throw 'La cita debe ser un número';
+  createArticle({ article, authors, magazine }) {
+    if(Number.isNaN(article.appointments)) throw 'appointments must be a number';
     let date = new Date();
-    date.setFullYear(data.date.year, data.date.month, data.date.day);
-    return new RepositoryArticles().createArticle(data.name, date, data.appointments);
+    date.setFullYear(article.date.year, article.date.month, article.date.day);
+    const articleData = {
+      name: article.name,
+      date: date.toLocaleDateString(),
+      appointments: article.appointments
+    }
+    return new RepositoryArticles().createArticle(articleData, authors, magazine);
   }
 }
 
