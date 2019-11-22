@@ -1,8 +1,11 @@
 const RepositoryAuthor = require('../repositories/RepositoryAuthor');
 
 class ServiceAuthor {
-  createAuthor(data) {
-    return new RepositoryAuthor().createAuthor(data.name, data.surname, data.lastname);
+  createAuthor({ name, surname, lastname }) {
+    if (!name) throw 'name is undefined';
+    if (!surname) throw 'surname is undefined';
+    if (!lastname) throw 'lastname is undefined';
+    return new RepositoryAuthor().createAuthor(name, surname, lastname);
   }
   getAll() {
     return new RepositoryAuthor().getAll();
