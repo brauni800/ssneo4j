@@ -15,6 +15,7 @@ app.use(require('./routes/RouteArticles'));
 app.use(require('./routes/RouteMagazine'));
 app.use(require('./routes/RouteAuthor'));
 app.use(require('./routes/RouteWorkAndBelong'));
+app.use(require('./routes/RouteWork'));
 
 //listen port
 app.listen(PORT, () => {
