@@ -1,11 +1,11 @@
 const RepositoryWorkAndBelong = require('../repositories/RepositoryWorkAndBelong');
 
 class ServiceWorkAndBelong {
-  getSjrBiggerThan({ sjr }) {
-    if (!sjr && sjr !== 0) throw 'sjr is undefined';
-    sjr = parseInt(sjr, 10);
-    if (isNaN(sjr)) throw 'sjr must be a number';
-    return new RepositoryWorkAndBelong().getSjrBiggerThan(sjr);
+  search({ authors = [], articles = [], magazines = [] }) {
+    if (!Array.isArray(authors)) throw 'authors must be an array';
+    if (!Array.isArray(articles)) throw 'articles must be an array';
+    if (!Array.isArray(magazines)) throw 'magazines must be an array';
+    return new RepositoryWorkAndBelong().search(authors, articles, magazines);
   }
 }
 

@@ -16,10 +16,10 @@ const WhereGenerator = (authors, articles, magazines) => {
       const keys = Object.keys(element);
       keys.forEach((key, keyIndex) => {
         if (typeof element[key] === 'string') {
-          cypher += `${id}.${key}=${element[key]}${keyIndex !== keys.length - 1 ? ' AND ' : ''}`;
+          cypher += `${id}.${key}=${isNaN(element[key]) ? `"${element[key]}"` : element[key]}${keyIndex !== keys.length - 1 ? ' AND ' : ''}`;
         } else {
           const { value, operation } = element[key];
-          cypher += `${id}.${key}${operation}${value}${keyIndex !== keys.length - 1 ? ' AND ' : ''}`;
+          cypher += `${id}.${key}${operation}${isNaN(value) ? `"${value}"` : value}${keyIndex !== keys.length - 1 ? ' AND ' : ''}`;
         }
       });
       cypher += `${elementIndex !== array.length - 1 ? ' OR ' : ''}`;
@@ -27,33 +27,45 @@ const WhereGenerator = (authors, articles, magazines) => {
     return `(${cypher})`;
   }
 
-  let authorCypher = `${authors.length > 0 ? buildCypher(authors, 'a') : null}`;
-  let articlesCypher = `${articles.length > 0 ? buildCypher(articles, 'ar') : null}`;
-  let magazinesCypher = `${magazines.length > 0 ? buildCypher(magazines, 'm') : null}`;
-  return `${authorCypher} --- ${articlesCypher} --- ${magazinesCypher}`;
+  /**
+   * @param {Object} obj 
+   * @param {Object[]} array 
+   * @param {Number} index 
+   */
+  const verifyRightValues = (obj, array, index) => {
+    for (let i = index + 1; i <= array.length - 1; i++) {
+      if (obj[array[i]]) return true;
+    }
+    return false;
+  }
+
+  let result = {
+    authorCypher: `${authors.length > 0 ? buildCypher(authors, 'a') : ''}`,
+    articlesCypher: `${articles.length > 0 ? buildCypher(articles, 'ar') : ''}`,
+    magazinesCypher: `${magazines.length > 0 ? buildCypher(magazines, 'm') : ''}`
+  }
+
+  let where = '';
+  const keys = Object.keys(result);
+  keys.forEach((key, index) => {
+    where += `${result[key] || ''}${index !== keys.length - 1 && result[key] && verifyRightValues(result, keys, index) ? ' AND ' : ''}`;
+  });
+
+  return where ? `WHERE ${where}` : '';
 }
 
 class RepositoryWorkAndBelong {
-  search({ author, article, magazine }) {
-    /* const cypher = ''
-      + 'MATCH (a:AUTHOR)-[w:WORK_IN]->(ar:ARTICLE)-[b:BELONG]->(m:MAGAZINE) '
-      + `${WhereGenerator(author, article, magazine)} `
-      + 'RETURN a, w, ar, b, m';
-    const resultPromise = session.run(cypher, { sjr }); */
-    return new Promise((resolve, reject) => {
-      /* resultPromise.then(result => {
-        resolve(result.records);
-      }).catch(err => reject(err)); */
-      resolve(WhereGenerator(author, article, magazine));
-    });
-  }
-
-  getSjrBiggerThan(sjr) {
+  /**
+   * @param {Object[]} author 
+   * @param {Object[]} article 
+   * @param {Object[]} magazine 
+   */
+  search(authors, articles, magazines) {
     const cypher = ''
       + 'MATCH (a:AUTHOR)-[w:WORK_IN]->(ar:ARTICLE)-[b:BELONG]->(m:MAGAZINE) '
-      + 'WHERE m.sjr > $sjr '
+      + `${WhereGenerator(authors, articles, magazines)} `
       + 'RETURN a, w, ar, b, m';
-    const resultPromise = session.run(cypher, { sjr });
+    const resultPromise = session.run(cypher);
     return new Promise((resolve, reject) => {
       resultPromise.then(result => {
         resolve(result.records);

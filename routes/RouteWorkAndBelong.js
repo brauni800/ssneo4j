@@ -3,9 +3,9 @@ const router = express.Router();
 
 const ServiceWorkAndBelong = require('../services/ServiceWorkAndBelong');
 
-router.get('/wb/sjr/:sjr', (req, res) => {
+router.post('/wb/search', (req, res) => {
   try {
-    new ServiceWorkAndBelong().getSjrBiggerThan(req.params)
+    new ServiceWorkAndBelong().search(req.body)
     .then(result => {
       console.log(result);
       res.send(result);
