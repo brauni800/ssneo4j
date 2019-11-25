@@ -7,6 +7,18 @@ class ServiceBelong {
     if (!Array.isArray(magazines)) throw 'magazines must be an array';
     return new RepositoryBelong().search(global.whereGenerator([], articles, magazines));
   }
+
+  create({ articles = [], magazines = [] }) {
+    if (!Array.isArray(articles)) throw 'articles must be an array';
+    if (!Array.isArray(magazines)) throw 'magazines must be an array';
+    return new RepositoryBelong().create(global.whereGenerator([], articles, magazines));
+  }
+
+  delete({ articles = [], magazines = [] }) {
+    if (!Array.isArray(articles)) throw 'articles must be an array';
+    if (!Array.isArray(magazines)) throw 'magazines must be an array';
+    return new RepositoryBelong().delete(global.whereGenerator([], articles, magazines));
+  }
 }
 
 module.exports = ServiceBelong;
