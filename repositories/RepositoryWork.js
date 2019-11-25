@@ -12,7 +12,8 @@ class RepositoryWork {
     const resultPromise = session.run(cypher);
     return new Promise((resolve, reject) => {
       resultPromise.then(result => {
-        resolve(result.records);
+        if (result.records.length > 0) resolve(result.records);
+        else reject(result.records);
       }).catch(err => reject(err));
     });
   }
@@ -29,7 +30,8 @@ class RepositoryWork {
     const resultPromise = session.run(cypher);
     return new Promise((resolve, reject) => {
       resultPromise.then(result => {
-        resolve(result.records);
+        if (result.summary.counters.relationshipsCreated()) resolve(result);
+        else reject('Relationships have not been created');
       }).catch(err => reject(err));
     });
   }

@@ -11,7 +11,7 @@ router.post('/w/search', (req, res) => {
       res.send(result);
     }).catch(error => {
       console.log(error);
-      res.status(404).send(error);
+      res.sendStatus(404);
     });
   } catch (error) {
     res.status(400).send(error);
