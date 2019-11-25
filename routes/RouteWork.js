@@ -9,9 +9,42 @@ router.post('/w/search', (req, res) => {
     .then(result => {
       console.log(result);
       res.send(result);
-    }).catch(error => console.log(error));
+    }).catch(error => {
+      console.log(error);
+      res.status(404).send(error);
+    });
   } catch (error) {
-    res.status(400).json({ error });
+    res.status(400).send(error);
+  }
+});
+
+router.post('/w', (req, res) => {
+  try {
+    new ServiceWork().create(req.body)
+    .then(result => {
+      console.log(result);
+      res.send(result);
+    }).catch(error => {
+      console.log(error);
+      res.status(409).send(error);
+    });
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+router.delete('/w', (req, res) => {
+  try {
+    new ServiceWork().delete(req.body)
+    .then(result => {
+      console.log(result);
+      res.send(result);
+    }).catch(error => {
+      console.log(error);
+      res.status(404).send(error);
+    });
+  } catch (error) {
+    res.status(400).send(error);
   }
 });
 

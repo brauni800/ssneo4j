@@ -16,6 +16,40 @@ class RepositoryWork {
       }).catch(err => reject(err));
     });
   }
+
+  /**
+   * @param {String} where
+   */
+  create(where) {
+    const cypher = ''
+      + 'MATCH (a:AUTHOR), (ar:ARTICLE) '
+      + `${where} `
+      + 'MERGE (a)-[w:WORK_IN]->(ar) '
+      + 'RETURN a, w, ar';
+    const resultPromise = session.run(cypher);
+    return new Promise((resolve, reject) => {
+      resultPromise.then(result => {
+        resolve(result.records);
+      }).catch(err => reject(err));
+    });
+  }
+
+  /**
+   * @param {String} where
+   */
+  delete(where) {
+    const cypher = ''
+      + 'MATCH (a:AUTHOR)-[w:WORK_IN]->(ar:ARTICLE) '
+      + `${where} `
+      + 'DELETE w';
+    const resultPromise = session.run(cypher);
+    return new Promise((resolve, reject) => {
+      resultPromise.then(result => {
+        if (result.summary.counters.relationshipsDeleted()) resolve('Relationships deleted');
+        else reject('Relationships have not been deleted');
+      }).catch(err => reject(err));
+    });
+  }
 }
 
 module.exports = RepositoryWork;
