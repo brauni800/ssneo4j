@@ -52,6 +52,30 @@ const whereGenerator = (authors, articles, magazines) => {
   return where ? `WHERE ${where}` : '';
 }
 
+const validateMagazine = (magazine, full = true) => {
+  if (typeof magazine !== 'object') throw 'magazine must be an object';
+  if (full) {
+    if (!magazine.name) throw 'name is undefined';
+    if (typeof magazine.name !== 'string') throw 'name must be a string';
+    if (!magazine.sjr && magazine.sjr !== 0) throw 'sjr is undefined';
+    magazine.sjr = parseInt(magazine.sjr, 10);
+    if (isNaN(magazine.sjr)) throw 'sjr must be a number';
+  } else {
+    const keys = Object.keys(magazine);
+    if (!keys.length) throw 'You must specify at least one attribute';
+    if (!keys.find(m => m === 'sjr' || m === 'name')) throw 'You must specify at least sjr or name';
+    if (keys.find(m => m === 'sjr')) {
+      magazine.sjr = parseInt(magazine.sjr, 10)
+      if (isNaN(magazine.sjr)) throw 'sjr must be a number';
+    }
+    if (keys.find(m => m === 'name')) {
+      if (typeof magazine.name !== 'string') throw 'name must be a string';
+    }
+  }
+  return magazine;
+}
+
 module.exports = {
   whereGenerator,
+  validateMagazine,
 }
