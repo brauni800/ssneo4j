@@ -1,7 +1,8 @@
 const RepositoryArticles = require('../repositories/RepositoryArticles');
+const global = require('../global');
 
 class ServiceArticles {
-  createArticle({ article, authors, magazine }) {
+  create({ article, authors, magazine }) {
     if (!article) throw 'article is undefined';
     if (!article.name) throw 'name in article is undefined';
     if (!article.date) throw 'date in article is undefined';
@@ -19,7 +20,7 @@ class ServiceArticles {
     if (!Array.isArray(authors)) throw 'authors must be an array';
     if (authors.length === 0) throw 'authors is empty';
     
-    return new RepositoryArticles().createArticle(article, authors, magazine);
+    return new RepositoryArticles().create(article, magazine, global.whereGenerator(authors, [], []));
   }
 }
 
