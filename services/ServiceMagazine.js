@@ -19,7 +19,7 @@ class ServiceMagazine {
     if (Array.isArray(magazines)) {
       return new RepositoryMagazine().delete(global.whereGenerator([], [], magazines));
     } else {
-      global.validateMagazine(magazines, false);
+      magazines = global.validateMagazine(magazines, false);
       return new RepositoryMagazine().delete(global.whereGenerator([], [], [ magazines ]));
     }
   }

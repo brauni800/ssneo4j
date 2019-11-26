@@ -36,7 +36,8 @@ router.delete('/magazine', (req, res) => {
     .then(result => {
       res.send(result);
     }).catch(error => {
-      res.status(404).send(error.code);
+      if (typeof error === 'string') res.status(404).send(error);
+      else res.status(409).send(error.code);
     });
   } catch (error) {
     res.status(400).send(error);
