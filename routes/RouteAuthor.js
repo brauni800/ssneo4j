@@ -5,13 +5,14 @@ const ServiceAuthor = require('../services/ServiceAuthor');
 
 router.post('/author', (req, res) => {
   try {
-    new ServiceAuthor().createAuthor(req.body)
+    new ServiceAuthor().create(req.body)
     .then(node => {
-      console.log(node);
-      res.send(node);
-    }).catch(error => console.log(error));
+      res.status(201).send(node);
+    }).catch(error => {
+      res.status(409).send(error);
+    });
   } catch (error) {
-    res.status(400).json({ error });
+    res.status(400).send(error);
   }
 });
 

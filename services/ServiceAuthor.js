@@ -2,11 +2,11 @@ const RepositoryAuthor = require('../repositories/RepositoryAuthor');
 const global = require('../global');
 
 class ServiceAuthor {
-  createAuthor({ name, surname, lastname }) {
+  create({ name, surname, lastname }) {
     if (!name) throw 'name is undefined';
     if (!surname) throw 'surname is undefined';
     if (!lastname) throw 'lastname is undefined';
-    return new RepositoryAuthor().createAuthor(name, surname, lastname);
+    return new RepositoryAuthor().create(name, surname, lastname);
   }
 
   search(authors) {

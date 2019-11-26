@@ -1,13 +1,12 @@
 const session = require('../dbconnection');
 
 class RepositoryAuthor {
-  createAuthor(name, surname, lastname) {
+  create(name, surname, lastname) {
     const resultPromise = session.run('MERGE (a:AUTHOR {name: $name, surname: $surname, lastname: $lastname}) RETURN a', { name, surname, lastname });
     return new Promise((resolve, reject) => {
       resultPromise.then(result => {
-        const singleRecord = result.records[0];
-        const node = singleRecord.get(0);
-        resolve(node);
+        if (result.summary.counters.nodesCreated()) resolve(result.records[0].get(0));
+        else reject('Node have not been created');
       }).catch(err => reject(err));
     });
   }
