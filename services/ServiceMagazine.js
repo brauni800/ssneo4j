@@ -2,12 +2,12 @@ const RepositoryMagazine = require('../repositories/RepositoryMagazine');
 const global = require('../global');
 
 class ServiceMagazine {
-  createMagazine({ name, sjr }) {
+  create({ name, sjr }) {
     if (!name) throw 'name is undefined';
     if (!sjr && sjr !== 0) throw 'sjr is undefined';
     sjr = parseInt(sjr, 10);
     if (isNaN(sjr)) throw 'sjr must be a number';
-    return new RepositoryMagazine().createMagazine(name, sjr);
+    return new RepositoryMagazine().create(name, sjr);
   }
   
   search(magazines) {

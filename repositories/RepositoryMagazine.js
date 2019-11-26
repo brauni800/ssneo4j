@@ -1,13 +1,12 @@
 const session = require('../dbconnection');
 
 class RepositoryMagazine {
-  createMagazine(name, sjr) {
+  create(name, sjr) {
     const resultPromise = session.run('MERGE (m:MAGAZINE {name: $name, sjr: $sjr}) RETURN m', { name, sjr });
     return new Promise((resolve, reject) => {
       resultPromise.then(result => {
-        const singleRecord = result.records[0];
-        const node = singleRecord.get(0);
-        resolve(node);
+        if (result.summary.counters.nodesCreated()) resolve(result.records[0].get(0));
+        else reject('Node have not been created');
       }).catch(err => reject(err));
     });
   }
