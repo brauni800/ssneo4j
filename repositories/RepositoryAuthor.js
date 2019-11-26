@@ -11,12 +11,20 @@ class RepositoryAuthor {
       }).catch(err => reject(err));
     });
   }
-  getAll() {
-    const resultPromise = session.run('MATCH (a:AUTHOR) RETURN a');
+  
+  /**
+   * @param {String} where 
+   */
+  search(where) {
+    const cypher = ''
+      + 'MATCH (a:AUTHOR) '
+      + `${where} `
+      + 'RETURN a';
+    const resultPromise = session.run(cypher);
     return new Promise((resolve, reject) => {
       resultPromise.then(result => {
-        const { records } = result;
-        resolve(records);
+        if (result.records.length > 0) resolve(result.records);
+        else reject(null);
       }).catch(err => reject(err));
     });
   }

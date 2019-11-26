@@ -17,13 +17,15 @@ router.post('/author', (req, res) => {
 
 router.get('/author', (req, res) => {
   try {
-    new ServiceAuthor().getAll()
+    new ServiceAuthor().search(req.body)
     .then(result => {
-      console.log(result);
       res.send(result);
-    }).catch(error => console.log(error));
+    }).catch(error => {
+      if (!error) res.sendStatus(404);
+      else res.status(400).send(error.code);
+    });
   } catch (error) {
-    res.status(400).json({ error });
+    res.status(400).send(error);
   }
 });
 

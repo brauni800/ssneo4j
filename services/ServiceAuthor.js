@@ -1,4 +1,5 @@
 const RepositoryAuthor = require('../repositories/RepositoryAuthor');
+const global = require('../global');
 
 class ServiceAuthor {
   createAuthor({ name, surname, lastname }) {
@@ -7,8 +8,13 @@ class ServiceAuthor {
     if (!lastname) throw 'lastname is undefined';
     return new RepositoryAuthor().createAuthor(name, surname, lastname);
   }
-  getAll() {
-    return new RepositoryAuthor().getAll();
+
+  search(authors) {
+    if (typeof authors === 'object') {
+      if (!Object.keys(authors).length) authors = [];
+    }
+    if (!Array.isArray(authors)) throw 'authors must be an array';
+    return new RepositoryAuthor().search(global.whereGenerator(authors, [], []));
   }
 }
 
