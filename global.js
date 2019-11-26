@@ -75,7 +75,34 @@ const validateMagazine = (magazine, full = true) => {
   return magazine;
 }
 
+const validateAuthor = (author, full = true) => {
+  if (typeof author !== 'object') throw 'author must be an object';
+  if (full) {
+    if (!author.name) throw 'name is undefined';
+    if (typeof author.name !== 'string') throw 'name must be a string';
+    if (!author.surname) throw 'surname is undefined';
+    if (typeof author.surname !== 'string') throw 'surname must be a string';
+    if (!author.lastname) throw 'lastname is undefined';
+    if (typeof author.lastname !== 'string') throw 'lastname must be a string';
+  } else {
+    const keys = Object.keys(author);
+    if (!keys.length) throw 'You must specify at least one attribute';
+    if (!keys.find(a => a === 'name' || a === 'surname' || a === 'lastname')) throw 'You must specify at least name, surname or lastname';
+    if (keys.find(a => a === 'name')) {
+      if (typeof author.name !== 'string') throw 'name must be a string';
+    }
+    if (keys.find(a => a === 'surname')) {
+      if (typeof author.surname !== 'string') throw 'surname must be a string';
+    }
+    if (keys.find(a => a === 'lastname')) {
+      if (typeof author.lastname !== 'string') throw 'lastname must be a string';
+    }
+  }
+  return author;
+}
+
 module.exports = {
   whereGenerator,
   validateMagazine,
+  validateAuthor,
 }
