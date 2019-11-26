@@ -30,4 +30,17 @@ router.get('/magazine', (req, res) => {
   }
 });
 
+router.delete('/magazine', (req, res) => {
+  try {
+    new ServiceMagazine().delete(req.body)
+    .then(result => {
+      res.send(result);
+    }).catch(error => {
+      res.status(404).send(error.code);
+    });
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
 module.exports = router;

@@ -3,11 +3,8 @@ const global = require('../global');
 
 class ServiceMagazine {
   create({ name, sjr }) {
-    if (!name) throw 'name is undefined';
-    if (!sjr && sjr !== 0) throw 'sjr is undefined';
-    sjr = parseInt(sjr, 10);
-    if (isNaN(sjr)) throw 'sjr must be a number';
-    return new RepositoryMagazine().create(name, sjr);
+    const magazine = global.validateMagazine({ name, sjr });
+    return new RepositoryMagazine().create(magazine.name, magazine.sjr);
   }
   
   search(magazines) {
@@ -16,6 +13,15 @@ class ServiceMagazine {
     }
     if (!Array.isArray(magazines)) throw 'magazines must be an array';
     return new RepositoryMagazine().search(global.whereGenerator([], [], magazines));
+  }
+
+  delete(magazines) {
+    if (Array.isArray(magazines)) {
+      return new RepositoryMagazine().delete(global.whereGenerator([], [], magazines));
+    } else {
+      global.validateMagazine(magazines, false);
+      return new RepositoryMagazine().delete(global.whereGenerator([], [], [ magazines ]));
+    }
   }
 }
 

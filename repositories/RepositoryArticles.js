@@ -36,7 +36,6 @@ class RepositoryArticles {
       + 'MATCH (ar:ARTICLE) '
       + `${where} `
       + 'RETURN ar';
-      console.log(cypher)
     const resultPromise = session.run(cypher);
     return new Promise((resolve, reject) => {
       resultPromise.then(result => {
