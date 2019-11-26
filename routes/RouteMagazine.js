@@ -17,13 +17,15 @@ router.post('/magazine', (req, res) => {
 
 router.get('/magazine', (req, res) => {
   try {
-    new ServiceMagazine().getAll()
+    new ServiceMagazine().search(req.body)
     .then(result => {
-      console.log(result);
       res.send(result);
-    }).catch(error => console.log(error));
+    }).catch(error => {
+      if (!error) res.sendStatus(404);
+      else res.status(400).send(error.code);
+    });
   } catch (error) {
-    res.status(400).json({ error });
+    res.status(400).send(error);
   }
 });
 

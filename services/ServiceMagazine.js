@@ -1,4 +1,5 @@
 const RepositoryMagazine = require('../repositories/RepositoryMagazine');
+const global = require('../global');
 
 class ServiceMagazine {
   createMagazine({ name, sjr }) {
@@ -8,8 +9,13 @@ class ServiceMagazine {
     if (isNaN(sjr)) throw 'sjr must be a number';
     return new RepositoryMagazine().createMagazine(name, sjr);
   }
-  getAll() {
-    return new RepositoryMagazine().getAll();
+  
+  search(magazines) {
+    if (typeof magazines === 'object') {
+      if (!Object.keys(magazines).length) magazines = [];
+    }
+    if (!Array.isArray(magazines)) throw 'magazines must be an array';
+    return new RepositoryMagazine().search(global.whereGenerator([], [], magazines));
   }
 }
 

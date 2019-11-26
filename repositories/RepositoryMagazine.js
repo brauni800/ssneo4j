@@ -2,7 +2,7 @@ const session = require('../dbconnection');
 
 class RepositoryMagazine {
   createMagazine(name, sjr) {
-    const resultPromise = session.run('MERGE (a:MAGAZINE {name: $name, sjr: $sjr}) RETURN a', { name, sjr });
+    const resultPromise = session.run('MERGE (m:MAGAZINE {name: $name, sjr: $sjr}) RETURN m', { name, sjr });
     return new Promise((resolve, reject) => {
       resultPromise.then(result => {
         const singleRecord = result.records[0];
@@ -11,12 +11,20 @@ class RepositoryMagazine {
       }).catch(err => reject(err));
     });
   }
-  getAll() {
-    const resultPromise = session.run('MATCH (a:MAGAZINE) RETURN a');
+  
+  /**
+   * @param {String} where 
+   */
+  search(where) {
+    const cypher = ''
+      + 'MATCH (m:MAGAZINE) '
+      + `${where} `
+      + 'RETURN m';
+    const resultPromise = session.run(cypher);
     return new Promise((resolve, reject) => {
       resultPromise.then(result => {
-        const { records } = result;
-        resolve(records);
+        if (result.records.length > 0) resolve(result.records);
+        else reject(null);
       }).catch(err => reject(err));
     });
   }
