@@ -13,7 +13,7 @@ const whereGenerator = (authors, articles, magazines) => {
     array.forEach((element, elementIndex) => {
       const keys = Object.keys(element);
       keys.forEach((key, keyIndex) => {
-        if (typeof element[key] === 'string') {
+        if (typeof element[key] === 'string' || typeof element[key] === 'number') {
           cypher += `${id}.${key}=${isNaN(element[key]) ? `"${element[key]}"` : element[key]}${keyIndex !== keys.length - 1 ? ' AND ' : ''}`;
         } else {
           const { value, operation } = element[key];
