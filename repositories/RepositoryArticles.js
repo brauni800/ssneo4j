@@ -27,6 +27,24 @@ class RepositoryArticles {
       }).catch(err => reject(err));
     });
   }
+
+  /**
+   * @param {String} where 
+   */
+  search(where) {
+    const cypher = ''
+      + 'MATCH (ar:ARTICLE) '
+      + `${where} `
+      + 'RETURN ar';
+      console.log(cypher)
+    const resultPromise = session.run(cypher);
+    return new Promise((resolve, reject) => {
+      resultPromise.then(result => {
+        if (result.records.length > 0) resolve(result.records);
+        else reject(null);
+      }).catch(err => reject(err));
+    });
+  }
 }
 
 module.exports = RepositoryArticles;

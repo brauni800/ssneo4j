@@ -22,6 +22,14 @@ class ServiceArticles {
     
     return new RepositoryArticles().create(article, magazine, global.whereGenerator(authors, [], []));
   }
+
+  search(articles) {
+    if (typeof articles === 'object') {
+      if (!Object.keys(articles).length) articles = [];
+    }
+    if (!Array.isArray(articles)) throw 'articles must be an array';
+    return new RepositoryArticles().search(global.whereGenerator([], articles, []));
+  }
 }
 
 module.exports = ServiceArticles;

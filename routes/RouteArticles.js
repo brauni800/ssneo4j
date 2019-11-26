@@ -16,4 +16,18 @@ router.post('/article', (req, res) => {
   }
 });
 
+router.get('/article', (req, res) => {
+  try {
+    new ServiceArticles().search(req.body)
+    .then(result => {
+      res.send(result);
+    }).catch(error => {
+      if (!error) res.sendStatus(404);
+      else res.status(400).send(error.code);
+    });
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
 module.exports = router;

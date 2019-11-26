@@ -1,6 +1,11 @@
 const session = require('../dbconnection');
 
 class RepositoryAuthor {
+  /**
+   * @param {String} name 
+   * @param {String} surname 
+   * @param {String} lastname 
+   */
   create(name, surname, lastname) {
     const resultPromise = session.run('MERGE (a:AUTHOR {name: $name, surname: $surname, lastname: $lastname}) RETURN a', { name, surname, lastname });
     return new Promise((resolve, reject) => {
