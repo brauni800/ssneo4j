@@ -9,8 +9,7 @@ class ServiceArticles {
     if (typeof magazine !== 'string') throw 'magazine must be a string';
 
     if (!authors) throw 'authors is undefined';
-    if (!Array.isArray(authors)) throw 'authors must be an array';
-    if (authors.length === 0) throw 'authors is empty';
+    authors = global.validateArray(authors, 'authors', global.validateAuthor, false);
     
     return new RepositoryArticles().create(article, magazine, global.whereGenerator(authors, [], []));
   }
@@ -19,12 +18,13 @@ class ServiceArticles {
     if (typeof articles === 'object') {
       if (!Object.keys(articles).length) articles = [];
     }
-    if (!Array.isArray(articles)) throw 'articles must be an array';
+    articles = global.validateArray(articles, 'articles', global.validateArticle, false, true);
     return new RepositoryArticles().search(global.whereGenerator([], articles, []));
   }
 
   delete(articles) {
     if (Array.isArray(articles)) {
+      articles = global.validateArray(articles, 'articles', global.validateArticle, false);
       return new RepositoryArticles().delete(global.whereGenerator([], articles, []));
     } else {
       articles = global.validateArticle(articles, false);

@@ -3,20 +3,20 @@ const global = require('../global');
 
 class ServiceWork {
   create({ authors = [], articles = [] }) {
-    if (!Array.isArray(authors)) throw 'authors must be an array';
-    if (!Array.isArray(articles)) throw 'articles must be an array';
+    authors = global.validateArray(authors, 'authors', global.validateAuthor, false);
+    articles = global.validateArray(articles, 'articles', global.validateArticle, false);
     return new RepositoryWork().create(global.whereGenerator(authors, articles, []));
   }
 
   search({ authors = [], articles = [] }) {
-    if (!Array.isArray(authors)) throw 'authors must be an array';
-    if (!Array.isArray(articles)) throw 'articles must be an array';
+    authors = global.validateArray(authors, 'authors', global.validateAuthor, false, true);
+    articles = global.validateArray(articles, 'articles', global.validateArticle, false, true);
     return new RepositoryWork().search(global.whereGenerator(authors, articles, []));
   }
 
   delete({ authors = [], articles = [] }) {
-    if (!Array.isArray(authors)) throw 'authors must be an array';
-    if (!Array.isArray(articles)) throw 'articles must be an array';
+    authors = global.validateArray(authors, 'authors', global.validateAuthor, false);
+    articles = global.validateArray(articles, 'articles', global.validateArticle, false);
     return new RepositoryWork().delete(global.whereGenerator(authors, articles, []));
   }
 }

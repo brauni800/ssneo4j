@@ -12,11 +12,13 @@ class ServiceAuthor {
       if (!Object.keys(authors).length) authors = [];
     }
     if (!Array.isArray(authors)) throw 'authors must be an array';
+    authors = global.validateArray(authors, 'authors', global.validateAuthor, false, true);
     return new RepositoryAuthor().search(global.whereGenerator(authors, [], []));
   }
 
   delete(authors) {
     if (Array.isArray(authors)) {
+      authors = global.validateArray(authors, 'authors', global.validateAuthor, false);
       return new RepositoryAuthor().delete(global.whereGenerator(authors, [], []))
     } else {
       authors = global.validateAuthor(authors, false);

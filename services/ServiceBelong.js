@@ -3,20 +3,20 @@ const global = require('../global');
 
 class ServiceBelong {
   create({ articles = [], magazines = [] }) {
-    if (!Array.isArray(articles)) throw 'articles must be an array';
-    if (!Array.isArray(magazines)) throw 'magazines must be an array';
+    articles = global.validateArray(articles, 'articles', global.validateArticle, false);
+    magazines = global.validateArray(magazines, 'magazines', global.validateMagazine, false);
     return new RepositoryBelong().create(global.whereGenerator([], articles, magazines));
   }
 
   search({ articles = [], magazines = [] }) {
-    if (!Array.isArray(articles)) throw 'articles must be an array';
-    if (!Array.isArray(magazines)) throw 'magazines must be an array';
+    articles = global.validateArray(articles, 'articles', global.validateArticle, false, true);
+    magazines = global.validateArray(magazines, 'magazines', global.validateMagazine, false, true);
     return new RepositoryBelong().search(global.whereGenerator([], articles, magazines));
   }
 
   delete({ articles = [], magazines = [] }) {
-    if (!Array.isArray(articles)) throw 'articles must be an array';
-    if (!Array.isArray(magazines)) throw 'magazines must be an array';
+    articles = global.validateArray(articles, 'articles', global.validateArticle, false);
+    magazines = global.validateArray(magazines, 'magazines', global.validateMagazine, false);
     return new RepositoryBelong().delete(global.whereGenerator([], articles, magazines));
   }
 }

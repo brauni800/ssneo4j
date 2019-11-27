@@ -11,12 +11,13 @@ class ServiceMagazine {
     if (typeof magazines === 'object') {
       if (!Object.keys(magazines).length) magazines = [];
     }
-    if (!Array.isArray(magazines)) throw 'magazines must be an array';
+    magazines = global.validateArray(magazines, 'magazines', global.validateMagazine, false, true);
     return new RepositoryMagazine().search(global.whereGenerator([], [], magazines));
   }
 
   delete(magazines) {
     if (Array.isArray(magazines)) {
+      magazines = global.validateArray(magazines, 'magazines', global.validateMagazine, false);
       return new RepositoryMagazine().delete(global.whereGenerator([], [], magazines));
     } else {
       magazines = global.validateMagazine(magazines, false);
