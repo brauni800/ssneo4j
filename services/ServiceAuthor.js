@@ -17,7 +17,7 @@ class ServiceAuthor {
 
   delete(authors) {
     if (Array.isArray(authors)) {
-      new RepositoryAuthor().delete(global.whereGenerator(authors, [], []))
+      return new RepositoryAuthor().delete(global.whereGenerator(authors, [], []))
     } else {
       authors = global.validateAuthor(authors, false);
       return new RepositoryAuthor().delete(global.whereGenerator([ authors ], [], []));
