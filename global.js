@@ -52,22 +52,30 @@ const whereGenerator = (authors, articles, magazines) => {
   return where ? `WHERE ${where}` : '';
 }
 
+/**
+ * @param {Object} magazine 
+ * @param {Boolean} full 
+ */
 const validateMagazine = (magazine, full = true) => {
   if (typeof magazine !== 'object') throw 'magazine must be an object';
   if (full) {
-    if (!magazine.name) throw 'name is undefined';
-    if (typeof magazine.name !== 'string') throw 'name must be a string';
+    // validación del sjr
     if (!magazine.sjr && magazine.sjr !== 0) throw 'sjr is undefined';
     magazine.sjr = parseInt(magazine.sjr, 10);
     if (isNaN(magazine.sjr)) throw 'sjr must be a number';
+    //validación del nombre
+    if (!magazine.name) throw 'name is undefined';
+    if (typeof magazine.name !== 'string') throw 'name must be a string';
   } else {
     const keys = Object.keys(magazine);
     if (!keys.length) throw 'You must specify at least one attribute';
     if (!keys.find(m => m === 'sjr' || m === 'name')) throw 'You must specify at least sjr or name';
+    // validación del sjr
     if (keys.find(m => m === 'sjr')) {
       magazine.sjr = parseInt(magazine.sjr, 10)
       if (isNaN(magazine.sjr)) throw 'sjr must be a number';
     }
+    // validación del nombre
     if (keys.find(m => m === 'name')) {
       if (typeof magazine.name !== 'string') throw 'name must be a string';
     }
@@ -75,25 +83,35 @@ const validateMagazine = (magazine, full = true) => {
   return magazine;
 }
 
+/**
+ * @param {Object} author 
+ * @param {Boolean} full 
+ */
 const validateAuthor = (author, full = true) => {
   if (typeof author !== 'object') throw 'author must be an object';
   if (full) {
+    // validación del nombre
     if (!author.name) throw 'name is undefined';
     if (typeof author.name !== 'string') throw 'name must be a string';
+    // validación del apellido materno
     if (!author.surname) throw 'surname is undefined';
     if (typeof author.surname !== 'string') throw 'surname must be a string';
+    // validación del apellido paterno
     if (!author.lastname) throw 'lastname is undefined';
     if (typeof author.lastname !== 'string') throw 'lastname must be a string';
   } else {
     const keys = Object.keys(author);
     if (!keys.length) throw 'You must specify at least one attribute';
     if (!keys.find(a => a === 'name' || a === 'surname' || a === 'lastname')) throw 'You must specify at least name, surname or lastname';
+    // validación del nombre
     if (keys.find(a => a === 'name')) {
       if (typeof author.name !== 'string') throw 'name must be a string';
     }
+    // validación del apellido materno
     if (keys.find(a => a === 'surname')) {
       if (typeof author.surname !== 'string') throw 'surname must be a string';
     }
+    // validación del apellido paterno
     if (keys.find(a => a === 'lastname')) {
       if (typeof author.lastname !== 'string') throw 'lastname must be a string';
     }
@@ -101,8 +119,54 @@ const validateAuthor = (author, full = true) => {
   return author;
 }
 
+/**
+ * @param {Object} article 
+ * @param {Boolean} full 
+ */
+const validateArticle = (article, full = true) => {
+  if (typeof article !== 'object') throw 'article must be an object';
+  if (full) {
+    if (!article) throw 'article is undefined';
+    // validación de nombre
+    if (!article.name) throw 'name in article is undefined';
+    if (typeof article.name !== 'string') throw 'name must be a string';
+    // validación de fecha
+    if (!article.date) throw 'date in article is undefined';
+    if (typeof article.date !== 'string') throw 'date must be a string';
+    const date = new Date(`${article.date} 00:00:0000`);
+    if (date.toString() === 'Invalid Date') throw 'Invalid Date';
+    article.date = date.toLocaleDateString();
+    // validación de citas
+    if (!article.appointments) throw 'appointments in article is undefined';
+    article.appointments = parseInt(article.appointments, 10);
+    if (isNaN(article.appointments)) throw 'appointments must be a number';
+  } else {
+    const keys = Object.keys(article);
+    if (!keys.length) throw 'You must specify at least one attribute';
+    if (!keys.find(a => a === 'name' || a === 'date' || a === 'appointments')) throw 'You must specify at least name, date or appointments';
+    // validación de nombre
+    if (keys.find(a => a === 'name')) {
+      if (typeof article.name !== 'string') throw 'name must be a string';
+    }
+    // validación de fecha
+    if (keys.find(a => a === 'date')) {
+      if (typeof article.date !== 'string') throw 'date must be a string';
+      const date = new Date(`${article.date} 00:00:0000`);
+      if (date.toString() === 'Invalid Date') throw 'Invalid Date';
+      article.date = date.toLocaleDateString();
+    }
+    // validación de citas
+    if (keys.find(a => a === 'appointments')) {
+      article.appointments = parseInt(article.appointments, 10);
+      if (isNaN(article.appointments)) throw 'appointments must be a number';
+    }
+  }
+  return article;
+}
+
 module.exports = {
   whereGenerator,
   validateMagazine,
   validateAuthor,
+  validateArticle,
 }
