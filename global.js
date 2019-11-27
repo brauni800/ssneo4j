@@ -164,9 +164,22 @@ const validateArticle = (article, full = true) => {
   return article;
 }
 
+/**
+ * @param {Object[]} array 
+ * @param {String} name 
+ * @param {Function} callback 
+ * @param {Boolean} full 
+ */
+const validateArray = (array, name, callback, full = true) => {
+  if (!Array.isArray(array)) throw `${name} must be an array`;
+  if (!array.length) throw `${name} is empty`;
+  return array.map(element => callback(element, full));
+}
+
 module.exports = {
   whereGenerator,
   validateMagazine,
   validateAuthor,
   validateArticle,
+  validateArray,
 }
