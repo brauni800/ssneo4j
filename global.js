@@ -169,10 +169,11 @@ const validateArticle = (article, full = true) => {
  * @param {String} name 
  * @param {Function} callback 
  * @param {Boolean} full 
+ * @param {Boolean} empty 
  */
-const validateArray = (array, name, callback, full = true) => {
+const validateArray = (array, name, callback, full = true, empty = false) => {
   if (!Array.isArray(array)) throw `${name} must be an array`;
-  if (!array.length) throw `${name} is empty`;
+  if (!array.length && !empty) throw `${name} is empty`;
   return array.map(element => callback(element, full));
 }
 
