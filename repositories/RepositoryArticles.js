@@ -44,6 +44,22 @@ class RepositoryArticles {
       }).catch(err => reject(err));
     });
   }
+
+  /**
+   * @param {String} where 
+   */
+  delete(where) {
+    const cypher = ''
+      + 'MATCH (ar:ARTICLE) '
+      + `${where} `
+      + 'DELETE ar';
+    return new Promise((resolve, reject) => {
+      session.run(cypher).then(result => {
+        if (result.summary.counters.nodesDeleted()) resolve('Nodes deleted');
+        else reject('Nodes have not been deleted');
+      }).catch(err => reject(err));
+    });
+  }
 }
 
 module.exports = RepositoryArticles;
