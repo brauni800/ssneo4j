@@ -16,21 +16,25 @@ class RepositoryCSV{
             surname = element.surname;
             lastname = element.lastname;
 
-            cypher += `MERGE (a${i}:AUTHOR {name: ${authorname}, surname: ${surname}, lastname: ${lastname}})-[w:WORK_IN]->(ar) `;
-            authorsforreturn += `a${i}, `
+            cypher += `MERGE (a${i}:AUTHOR {name: "${authorname}", surname: "${surname}", lastname: "${lastname}"})-[w${i}:WORK_IN]->(ar) `;
+            authorsforreturn += `a${i}, w${i}, `
         }
 
         cypher += 'MERGE (ar)-[b:BELONG]->(m) '
-        + 'RETURN ' + authorsforreturn + 'w, ar, b, m';
+        + 'RETURN ' + authorsforreturn + 'ar, b, m';
 
         //console.log(cypher);
 
         const resultPromise = session.run(cypher, {namemagazine, sjr, name, date, appointments});
         return new Promise((resolve, reject)=>{
-            resultPromise.then(result =>{
+            resultPromise.then(result => {
+                console.log('result', result);
                 if(result.summary.counters.relationshipsCreated()) resolve(result);
                 else reject('Relationships have not been created');
-            }).catch(err => reject(err));
+            }).catch(err => {
+                console.error('Error', err);
+                reject(err);
+            });
         });
     }
 }
