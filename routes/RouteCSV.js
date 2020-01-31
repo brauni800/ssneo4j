@@ -19,8 +19,8 @@ const upload = multer({storage})
 router.post('/upload', upload.single('file'), (req, res)=>{
     try {
         console.log(`Storage location is ${req.hostname}/${req.file.path}`);
-        new ServiceCSV().readCSV('./uploads/prueba_csv.csv');
-        return res.send(req.file);
+        console.log(req.file);
+        return res.status(201).send(new ServiceCSV().readCSV('./' + req.file.path));
     } catch (error) {
         res.status(400).send(error);
     }
