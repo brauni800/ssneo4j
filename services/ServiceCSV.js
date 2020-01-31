@@ -74,7 +74,7 @@ class ServiceCSV{
         //Logic
         fs.createReadStream(csvfilepath)
         .pipe(parser)
-        .on("end", function(){
+        .on("end", async function(){
             console.log("the file was readed");
 
             results.forEach(element => {
@@ -99,7 +99,7 @@ class ServiceCSV{
 
             for (let i = 0; i < articles.length; i++) {
                 try {
-                    new RepositoryCSV().create(articles[i],authorsforarticle[i],magazines[i])
+                    await new RepositoryCSV().create(articles[i],authorsforarticle[i],magazines[i])
                     .then(node =>{
                         response.push(node);
                     }).catch(error => {

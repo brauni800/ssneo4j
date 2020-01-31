@@ -9,6 +9,8 @@ class RepositoryCSV{
         + 'MERGE (m:MAGAZINE {name: $namemagazine, sjr: $sjr}) '
         + 'MERGE (ar:ARTICLE { name: $name, date: $date, appointments: $appointments }) ';
 
+        let authorsCypher = '';
+        let workinCypher = '';
         for (let i = 0; i < authors.length; i++) {
             const element = authors[i];
             let authorname, surname, lastname;
@@ -16,11 +18,13 @@ class RepositoryCSV{
             surname = element.surname;
             lastname = element.lastname;
 
-            cypher += `MERGE (a${i}:AUTHOR {name: "${authorname}", surname: "${surname}", lastname: "${lastname}"})-[w${i}:WORK_IN]->(ar) `;
+            authorsCypher += `MERGE (a${i}:AUTHOR {name: "${authorname}", surname: "${surname}", lastname: "${lastname}"}) `;
+            workinCypher += `MERGE (a${i})-[w${i}:WORK_IN]->(ar) `;
+            // cypher += `MERGE (a${i}:AUTHOR {name: "${authorname}", surname: "${surname}", lastname: "${lastname}"})-[w${i}:WORK_IN]->(ar) `;
             authorsforreturn += `a${i}, w${i}, `
         }
 
-        cypher += 'MERGE (ar)-[b:BELONG]->(m) '
+        cypher += `${authorsCypher} ${workinCypher} MERGE (ar)-[b:BELONG]->(m) `;
         + 'RETURN ' + authorsforreturn + 'ar, b, m';
 
         //console.log(cypher);
