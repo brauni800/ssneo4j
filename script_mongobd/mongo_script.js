@@ -43,62 +43,53 @@ const getArticles = new Promise((resolve, reject) => {
 	});
 });
 
-const getAuthor = (institution, scopus_id) => new Promise((resolve, reject) => {
-	ConnectionFacultades.then(({ institutionConnection, facDB }) => {
-		const filter = { scopus_claves: scopus_id };
-		const project = { _id: 1, nombres: 1, apellidos: 1, sni: 1, dependencia: 1, cuerpo_academico: 1 };
-		institutionConnection.collection(institution).find(filter).project(project).toArray((err, items) => {
-			setTimeout(() => {
-				console.log(items);
-			}, 1000);
-			if (err) {
-				console.log('author toArray error', err);
-				throw reject(err)
-			};
-			console.log('items collection', items);
-			resolve({ items, facDB });
-		});
+const getAuthor = (connection, db, institution, scopus_id) => new Promise((resolve, reject) => {
+	const filter = { scopus_claves: scopus_id };
+	const project = { _id: 1, nombres: 1, apellidos: 1, sni: 1, dependencia: 1, cuerpo_academico: 1 };
+	connection.collection(institution).find(filter).project(project).toArray((err, items) => {
+		if (err) reject(err);
+		if (items.length > 0) resolve({ item: items[0] });
+		else resolve();
 	});
-});
+}).catch((err) => ({}));
 
 const generateData = new Promise((resolve, reject) => {
 	listFacultades.then((institutions) => {
 		getArticles.then((articles) => {
-			const result = [];
-			articles.items.forEach((article) => {
-				if (!article.autor_correspondencia) return;
-				const article_result = {
-					title: article.titulo,
-					scopus_id_article: article.scopus_id,
-					appointments: article.citas_recibidas,
-					magazine_name: article.nombre_revista,
-					sjr: article.SJR,
-					authors: [],
-				};
-				/* getAuthor(institutions.items[0].name, article.scopus_id_autores[0]).then((author) => {
-					author.facDB.close();
-					console.log('author', author);
-				}); */
-				/* institutions.items.forEach((institution) => {
-					const author_result = {};
-					article.scopus_id_autores.forEach((scopus_id) => {
-						getAuthor(institution.name, scopus_id).then((author) => {
-							// if (!author.items) return;
-							console.log('author founded', author.items);
-							author_result = { ...author.items };
-						}).catch((err) => console.log('error author', err));
-						article_result.authors.push(author_result);
+			articles.infoProdSDB.close();
+			ConnectionFacultades.then(({ institutionConnection, facDB }) => {
+				const result = [];
+				articles.items.forEach((article) => {
+					if (!article.autor_correspondencia) return;
+					const article_result = {
+						title: article.titulo,
+						scopus_id_article: article.scopus_id,
+						appointments: article.citas_recibidas,
+						magazine_name: article.nombre_revista,
+						sjr: article.SJR,
+						authors: [],
+					};
+					institutions.items.forEach((institution) => {
+						article.scopus_id_autores.forEach((scopus_id) => {
+							article_result.authors.push(getAuthor(institutionConnection, facDB, institution.name, scopus_id));
+						});
 					});
-				}); */
-				result.push(article_result);
+					result.push(article_result);
+				});
+				resolve({ result, institutions, articles });
 			});
-			resolve({ result, institutions, articles });
 		});
 	});
 });
 
-generateData.then(({ result, institutions, articles }) => {
-	console.log('result', result);
-	institutions.facDB.close();
-	articles.infoProdSDB.close();
+generateData.then(({ result, institutions, articles, author }) => {
+	result.forEach((v) => {
+		Promise.all(v.authors).then((authors) => {
+			authors = authors.filter((author) => author);
+			console.log('authors', authors);
+		});
+	});
+	// console.log('author', author);
+	// institutions.facDB.close();
+	// articles.infoProdSDB.close();
 });
